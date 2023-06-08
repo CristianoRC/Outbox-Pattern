@@ -30,6 +30,7 @@ A grande maioria dos bancos de dados conseguem dar garantia de uma transação, 
 Existem duas abordagens, uma de criar uma tabela generica, com os dados que tem que ter no evento, muitas das vezes uma coluna JSON se tiverem usando um banco relacional, e outra é ter uma tabela específica para cada tipo de evento, mas todas elas tem alguns pontos em comum.
 
 - Id
+- Chave de Idempotencia
 - Já foi processado
 - Data do processamento
 - Mensagem que deve ser enviada no evento
@@ -44,6 +45,10 @@ Já foi processado e Data do processamento podem se tornar uma coisa só, essa �
 <img src="./images/table.png" width="600"/>
 
 
+#### Possíveis problemas
+
+Mas um dos possíveis questionamentos é em relação a esse serviço que adiciona mensagem no tópico, ele pode dar problema novamente! Se você salvar no banco que foi enviado e deu problema para enviar teria que dar um rollback, sim, aí seria um problema parecido do inicial, mas, mais simples de resolver. Mas, na prática, o ideal é enviar a mensagem e depois salvar no banco de dados que foi feito com sucesso. Você pode até argumentar que o banco de dados pode estar fora do ar depois que a mensagem foi enviada, e ela seria enviada duas vezes, sim, esse é um problema, mas conseguimos resolver ele de uma forma simples, que é criar consumidores idempotentes, da uma olhada nesse vídeo que eu falo um pouco mais sobre o assunto.
+[[Arquitetura] O que são chaves de idempotência?](https://youtu.be/U0DyJx68oCY)
 
 ### CDC - Change Data Capture
 
