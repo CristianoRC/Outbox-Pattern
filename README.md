@@ -9,7 +9,7 @@ Documentação com exemplos na prática de como funciona o Outbox Pattern em mic
 
 Também conhecido como Transactional Outbox Pattern, é usado em situações onde você precisa garantir a transação de uma operação, salvar no banco e enviar os eventos. Imagina que uma transação chegou na sua conta digital, você já subtraiu o saldo da pessoa no banco de dados, mas acaba tendo problemas ao enviar a mensagem para o seu serviço de mensageria, informando que o esse valor deveria ser enviado para outra conta externa, por conta de instabilidade, ele estar fora do ar... . Como você lida com isso? Quais eventos já foram enviados, quais precisaremos reenviar?
 
-<img src="./images/error.png" width="700"/>
+<img src="./images/error.png" width="800"/>
 
 É impossível fazer uma transação entre um banco de dados e um message broker, para resolver esse problema a gente poderia fazer de duas formas:
 
@@ -23,13 +23,29 @@ Também conhecido como Transactional Outbox Pattern, é usado em situações ond
 A grande maioria dos bancos de dados conseguem dar garantia de uma transação, que basicamente é executar mais de uma ação no banco de dados como se fosse uma só, aí todos funcionam ou nehuma funciona, e já que não da para fazer esse fluxo de transação entre um banco e um message broker como expliquei anteriormente, o Outbox Pattern tem como ideia pricipal de em uma unica transação para o banco de dados você salvar a ação, e o evento relacionado a ação, e depois vem uma oturo serviço que roda em background que pega a mensagem de evento do banco e coloca no message broker, dessa forma você nunca vai perder um evento, e vais ter a garantia se ele já foi enviado ou não.
 
 
-<img src="./images/outbox.png" width="700"/>
+<img src="./images/outbox.png" width="800"/>
+
+#### Estrutura de uma tabela de eventos
+
+Existem duas abordagens, uma de criar uma tabela generica, com os dados que tem que ter no evento, muitas das vezes uma coluna JSON se tiverem usando um banco relacional, e outra é ter uma tabela específica para cada tipo de evento, mas todas elas tem alguns pontos em comum.
+
+- Id
+- Já foi processado
+- Data do processamento
+- Mensagem que deve ser enviada no evento
+
+Em tabelas genricas você pode ter coisas como
+
+- Qual topico/fila esse evento deve ser enviado
+- Qual o tipo desse evento(transação, saque...)
+
+Já foi processado e Data do processamento podem se tornar uma coisa só, essa é a coluna que garante que a mensagem já foi enviada ou não, e quando ela foi enviada.
+
+<img src="./images/table.png" width="600"/>
 
 
 
 ### CDC - Change Data Capture
-
-### Outras vantagens
 
 TODO:
 
