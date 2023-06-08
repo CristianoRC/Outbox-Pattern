@@ -56,6 +56,12 @@ São conceitos muito parecidos(e muitas vezes usados em conjunto), uma das grand
 
 ## Inbox Pattern
 
-TODO:
+Ele tem uma ideia bem parecida com o inbox, mas eles podem ser usados de formas totalmente diferentes. A sua ideia principal e **garantir que não vai perder nenhum evento recebido**, e para isso a gente pega o evento e apenas salva ele no banco quando chega, e ai depois a gente processa usando um serviço em background.
+A maioria dos sistemas de message broker conseguem trabalhar com a ideia de reentregar em caso de erro e coisas do tipo, mas em casos onde o evento é muito demorado para acabar, pois tem muitos passos, ou por segurança é importante ter o registro desses eventos, até mesmo para um possível reprocessamento, vale muito a pena usar essa ideia.
+Além dos pontos levantados anteriormente, você pode ter facilidades em casos onde você quer verificar a duplicidade das mensagens; casos onde precisa ser executado em uma ordem específica, onde uma priority queue não resolve seu problema...
+
+<img src="./images/inbox.png" width="800"/>
+
+
 
 Obs.: O exemplo usado não é 100% real, foram retirados alguns conceitos para facilitar a explicação*
