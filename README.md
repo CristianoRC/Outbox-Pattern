@@ -52,7 +52,7 @@ Mas um dos possíveis questionamentos é em relação a esse serviço que adicio
 
 ### CDC - Change Data Capture
 
-TODO:
+São conceitos muito parecidos(e muitas vezes usados em conjunto), uma das grandes diferençaras é que o CDC acaba usando uma view materializada no banco de dados para o controle dos eventos, diferente do outbox pattern que tem essa complexidade a mais de lidar com mais de uma tabela, claro, acaba sendo mais complexo, mas, você tem uma maior flexibilidade na construção desses eventos. O conceito de CDC é algo que nunca utilizei, então também indico dar uma olhada, principalmente no Debezium, uma das ferramentas mais usadas no mercado para isso.
 
 ## Inbox Pattern
 
