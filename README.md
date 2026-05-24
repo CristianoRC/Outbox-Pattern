@@ -56,9 +56,15 @@ São conceitos muito parecidos(e muitas vezes usados em conjunto), uma das grand
 
 ## Inbox Pattern
 
-Ele tem uma ideia bem parecida com o inbox, mas eles podem ser usados de formas totalmente diferentes. A sua ideia principal e **garantir que não vai perder nenhum evento recebido**, e para isso a gente pega o evento e apenas salva ele no banco quando chega, e ai depois a gente processa usando um serviço em background.
-A maioria dos sistemas de message broker conseguem trabalhar com a ideia de reentregar em caso de erro e coisas do tipo, mas em casos onde o evento é muito demorado para acabar, pois tem muitos passos, ou por segurança é importante ter o registro desses eventos, até mesmo para um possível reprocessamento, vale muito a pena usar essa ideia.
-Além dos pontos levantados anteriormente, você pode ter facilidades em casos onde você quer verificar a duplicidade das mensagens; casos onde precisa ser executado em uma ordem específica, onde uma priority queue não resolve seu problema...
+Ele tem uma ideia bem parecida com o outbox, mas eles podem ser usados de formas totalmente diferentes.
+
+A sua ideia principal é **garantir o processamento idempotente dos eventos recebidos**, evitando duplicação. Como a maioria dos message brokers entrega mensagens com semântica *at-least-once* (pelo menos uma vez), é comum que o mesmo evento chegue mais de uma vez, seja por retry, falha no ACK ou rebalanceamento de consumidores.
+
+Para resolver isso, a gente salva o evento (ou pelo menos sua chave de idempotência) no banco assim que ele chega, e só processa se ainda não tiver sido processado.
+
+Como efeito colateral, você também ganha durabilidade, ou seja, não perde eventos mesmo se o serviço cair antes de processar, e ganha também a possibilidade de reprocessar quando precisar.
+
+Além da idempotência, o padrão também ajuda em outros cenários: processos longos com muitos passos, onde você quer desacoplar a recepção do processamento, dando ACK rápido pro broker; necessidade de auditoria e registro dos eventos recebidos; ou quando o evento precisa ser executado em uma ordem específica que uma priority queue não resolve.
 
 <img src="./images/inbox.png" width="800"/>
 
