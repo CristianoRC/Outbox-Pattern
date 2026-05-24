@@ -20,24 +20,24 @@ Também conhecido como Transactional Outbox Pattern, é usado em situações ond
 
 ### Como ele funciona
 
-A grande maioria dos bancos de dados conseguem dar garantia de uma transação, que basicamente é executar mais de uma ação no banco de dados como se fosse uma só, aí todos funcionam ou nehuma funciona, e já que não da para fazer esse fluxo de transação entre um banco e um message broker como expliquei anteriormente, o Outbox Pattern tem como ideia pricipal de em uma unica transação para o banco de dados você salvar a ação, e o evento relacionado a ação, e depois vem uma oturo serviço que roda em background que pega a mensagem de evento do banco e coloca no message broker, dessa forma você nunca vai perder um evento, e vais ter a garantia se ele já foi enviado ou não.
+A grande maioria dos bancos de dados conseguem dar garantia de uma transação, que basicamente é executar mais de uma ação no banco de dados como se fosse uma só, aí todos funcionam ou nenhuma funciona, e já que não dá para fazer esse fluxo de transação entre um banco e um message broker como expliquei anteriormente, o Outbox Pattern tem como ideia principal de em uma única transação para o banco de dados você salvar a ação, e o evento relacionado a ação, e depois vem um outro serviço que roda em background que pega a mensagem de evento do banco e coloca no message broker, dessa forma você nunca vai perder um evento, e vai ter a garantia se ele já foi enviado ou não.
 
 
 <img src="./images/outbox.png" width="800"/>
 
 #### Estrutura de uma tabela de eventos
 
-Existem duas abordagens, uma de criar uma tabela generica, com os dados que tem que ter no evento, muitas das vezes uma coluna JSON se tiverem usando um banco relacional, e outra é ter uma tabela específica para cada tipo de evento, mas todas elas tem alguns pontos em comum.
+Existem duas abordagens, uma de criar uma tabela genérica, com os dados que tem que ter no evento, muitas das vezes uma coluna JSON se tiverem usando um banco relacional, e outra é ter uma tabela específica para cada tipo de evento, mas todas elas tem alguns pontos em comum.
 
 - Id
-- Chave de Idempotencia
+- Chave de Idempotência
 - Já foi processado
 - Data do processamento
 - Mensagem que deve ser enviada no evento
 
-Em tabelas genricas você pode ter coisas como
+Em tabelas genéricas você pode ter coisas como
 
-- Qual topico/fila esse evento deve ser enviado
+- Qual tópico/fila esse evento deve ser enviado
 - Qual o tipo desse evento(transação, saque...)
 
 Já foi processado e Data do processamento podem se tornar uma coisa só, essa é a coluna que garante que a mensagem já foi enviada ou não, e quando ela foi enviada.
@@ -52,7 +52,7 @@ Mas um dos possíveis questionamentos é em relação a esse serviço que adicio
 
 ### CDC - Change Data Capture
 
-São conceitos muito parecidos(e muitas vezes usados em conjunto), uma das grandes diferençaras é que o CDC acaba usando uma view materializada no banco de dados para o controle dos eventos, diferente do outbox pattern que tem essa complexidade a mais de lidar com mais de uma tabela, claro, acaba sendo mais complexo, mas, você tem uma maior flexibilidade na construção desses eventos. O conceito de CDC é algo que nunca utilizei, então também indico dar uma olhada, principalmente no Debezium, uma das ferramentas mais usadas no mercado para isso.
+São conceitos muito parecidos (e muitas vezes usados em conjunto). A grande diferença é que o CDC funciona lendo o log de transações do próprio banco (como o WAL no Postgres ou o binlog no MySQL), capturando as mudanças direto da fonte, sem precisar de uma tabela extra de eventos como no Outbox. Por outro lado, o CDC normalmente exige uma infra adicional pra rodar, como Debezium e Kafka Connect, enquanto o Outbox vive dentro do banco da própria aplicação, o que costuma ser mais simples operacionalmente, mesmo tendo que lidar com a tabela extra de eventos. O conceito de CDC é algo que nunca utilizei, então também indico dar uma olhada, principalmente no Debezium, uma das ferramentas mais usadas no mercado para isso.
 
 ## Inbox Pattern
 
